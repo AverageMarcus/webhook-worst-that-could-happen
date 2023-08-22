@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: "fork-bomb.marcusnoble.com"
+  labels:
+    scenario: fork-bomb
+webhooks:
+- name: "fork-bomb.marcusnoble.com"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    operations:  ["CREATE"]
+    resources:   ["pods"]
+    scope:       "Namespaced"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "fork-bomb"
+      path: /mutate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up

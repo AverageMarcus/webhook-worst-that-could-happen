@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fork-bomb
+  labels:
+    scenario: fork-bomb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: fork-bomb
+  template:
+    metadata:
+      labels:
+        scenario: fork-bomb
+    spec:
+      containers:
+      - name: fork-bomb
+        image: averagemarcus/worst-webhook:fork-bomb
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: fork-bomb-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: fork-bomb-secret
+        secret:
+          secretName: fork-bomb-secret
