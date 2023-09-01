@@ -7,10 +7,10 @@ metadata:
 webhooks:
 - name: "data-overload.marcusnoble.com"
   rules:
-  - apiGroups:   ["*"]
-    apiVersions: ["*"]
-    resources:   ["*"]
-    operations:  ["CREATE"]
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    resources:   ["pods"]
+    operations:  ["*"]
     scope:       "*"
   clientConfig:
     service:
