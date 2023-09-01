@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: "data-overload.marcusnoble.com"
+  labels:
+    scenario: data-overload
+webhooks:
+- name: "data-overload.marcusnoble.com"
+  rules:
+  - apiGroups:   ["*"]
+    apiVersions: ["*"]
+    resources:   ["*"]
+    operations:  ["CREATE"]
+    scope:       "*"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "data-overload"
+      path: /mutate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up

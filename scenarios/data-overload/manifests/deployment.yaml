@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-overload
+  labels:
+    scenario: data-overload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: data-overload
+  template:
+    metadata:
+      labels:
+        scenario: data-overload
+    spec:
+      serviceAccountName: data-overload
+      containers:
+      - name: data-overload
+        image: averagemarcus/worst-webhook:latest
+        imagePullPolicy: Always
+        command:
+        - /app/data-overload
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: data-overload-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: data-overload-secret
+        secret:
+          secretName: data-overload-secret

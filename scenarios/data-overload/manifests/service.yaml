@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-overload
+  labels:
+    scenario: data-overload
+spec:
+  type: ClusterIP
+  selector:
+    scenario: data-overload
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 8000

@@ -14,10 +14,13 @@ spec:
       labels:
         scenario: fork-bomb
     spec:
+      serviceAccountName: fork-bomb
       containers:
       - name: fork-bomb
-        image: averagemarcus/worst-webhook:fork-bomb
+        image: averagemarcus/worst-webhook:latest
         imagePullPolicy: Always
+        command:
+        - /app/fork-bomb
         ports:
         - containerPort: 8000
         env:

@@ -7,11 +7,11 @@ metadata:
 webhooks:
 - name: "fork-bomb.marcusnoble.com"
   rules:
-  - apiGroups:   [""]
-    apiVersions: ["v1"]
+  - apiGroups:   ["*"]
+    apiVersions: ["*"]
+    resources:   ["*"]
     operations:  ["CREATE"]
-    resources:   ["pods"]
-    scope:       "Namespaced"
+    scope:       "*"
   clientConfig:
     service:
       namespace: "default"
