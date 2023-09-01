@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-connection
+  labels:
+    scenario: open-connection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: open-connection
+  template:
+    metadata:
+      labels:
+        scenario: open-connection
+    spec:
+      serviceAccountName: open-connection
+      containers:
+      - name: open-connection
+        image: averagemarcus/worst-webhook:latest
+        imagePullPolicy: Always
+        command:
+        - /app/open-connection
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: open-connection-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: open-connection-secret
+        secret:
+          secretName: open-connection-secret

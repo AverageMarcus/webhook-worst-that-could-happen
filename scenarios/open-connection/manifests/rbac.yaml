@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: open-connection
+  labels:
+    scenario: open-connection
+---
