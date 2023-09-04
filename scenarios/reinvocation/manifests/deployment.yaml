@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reinvocation
+  labels:
+    scenario: reinvocation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: reinvocation
+  template:
+    metadata:
+      labels:
+        scenario: reinvocation
+    spec:
+      serviceAccountName: reinvocation
+      containers:
+      - name: reinvocation
+        image: averagemarcus/worst-webhook:latest
+        imagePullPolicy: Always
+        command:
+        - /app/reinvocation
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: reinvocation-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: reinvocation-secret
+        secret:
+          secretName: reinvocation-secret

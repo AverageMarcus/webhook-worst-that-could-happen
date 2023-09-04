@@ -1,0 +1,41 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: "reinvocation.marcusnoble.com"
+  labels:
+    scenario: reinvocation
+webhooks:
+- name: "reinvocation-1.marcusnoble.com"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    resources:   ["pods"]
+    operations:  ["CREATE"]
+    scope:       "*"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "reinvocation"
+      path: /mutate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up
+  reinvocationPolicy: IfNeeded
+- name: "reinvocation-2.marcusnoble.com"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    resources:   ["pods"]
+    operations:  ["CREATE"]
+    scope:       "*"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "reinvocation"
+      path: /mutate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up
+  reinvocationPolicy: IfNeeded

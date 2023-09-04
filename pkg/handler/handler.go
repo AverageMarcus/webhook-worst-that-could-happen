@@ -14,6 +14,8 @@ import (
 var (
 	scheme = runtime.NewScheme()
 	codecs = serializer.NewCodecFactory(scheme)
+
+	patchType = admission.PatchTypeJSONPatch
 )
 
 type AdmissionFunc func(*admission.AdmissionReview, *admission.AdmissionResponse) error
@@ -44,6 +46,7 @@ func Handle(admissionFn AdmissionFunc) http.HandlerFunc {
 		}
 
 		review.Response = response
+		review.Response.PatchType = &patchType
 		responseBytes, err := json.Marshal(review)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("could not write response body: %v", err), http.StatusBadRequest)

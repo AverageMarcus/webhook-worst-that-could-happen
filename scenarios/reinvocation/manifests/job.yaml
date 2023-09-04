@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: reinvocation-webhook-cert-setup
+  labels:
+    scenario: reinvocation
+spec:
+  template:
+    spec:
+      serviceAccountName: webhook-cert-sa
+      initContainers:
+      - name: webhook-cert-setup
+        image: cribl/k8s-webhook-cert-manager:1.0.1
+        command: ["./generate_certificate.sh"]
+        args:
+          - "--service"
+          - "reinvocation"
+          - "--webhook"
+          - "reinvocation.marcusnoble.com"
+          - "--secret"
+          - "reinvocation-secret"
+          - "--namespace"
+          - "default"
+      containers:
+      - name: copy-ca-bundle
+        image: quay.io/giantswarm/kubectl:1.27.4
+        command:
+        - sh
+        - -c
+        - |
+          CABUNDLE=$(kubectl get mutatingwebhookconfiguration reinvocation.marcusnoble.com \
+            -o jsonpath='{.webhooks[0].clientConfig.caBundle}')
+
+          kubectl patch mutatingwebhookconfiguration reinvocation.marcusnoble.com \
+            --type='json' -p "[{'op': 'add', 'path': '/webhooks/1/clientConfig/caBundle', 'value':'${CABUNDLE}'}]"
+      - name: set-failure-policy
+        image: quay.io/giantswarm/kubectl:1.27.4
+        command:
+        - sh
+        - -c
+        - |
+          kubectl patch mutatingwebhookconfiguration reinvocation.marcusnoble.com \
+            --type='json' -p "[{'op': 'add', 'path': '/webhooks/0/failurePolicy', 'value':'Fail'}]"
+          kubectl patch mutatingwebhookconfiguration reinvocation.marcusnoble.com \
+            --type='json' -p "[{'op': 'add', 'path': '/webhooks/1/failurePolicy', 'value':'Fail'}]"
+      restartPolicy: OnFailure
+  backoffLimit: 3
