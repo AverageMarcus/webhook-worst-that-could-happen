@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cut-off-response
+  labels:
+    scenario: cut-off-response
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: cut-off-response
+  template:
+    metadata:
+      labels:
+        scenario: cut-off-response
+    spec:
+      serviceAccountName: cut-off-response
+      containers:
+      - name: cut-off-response
+        image: averagemarcus/worst-webhook:latest
+        imagePullPolicy: Always
+        command:
+        - /app/cut-off-response
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: cut-off-response-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: cut-off-response-secret
+        secret:
+          secretName: cut-off-response-secret

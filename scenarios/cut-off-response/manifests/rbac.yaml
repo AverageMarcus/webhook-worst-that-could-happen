@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cut-off-response
+  labels:
+    scenario: cut-off-response
+---
