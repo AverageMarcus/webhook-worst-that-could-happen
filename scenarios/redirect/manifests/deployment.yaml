@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redirect
+  labels:
+    scenario: redirect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: redirect
+  template:
+    metadata:
+      labels:
+        scenario: redirect
+    spec:
+      serviceAccountName: redirect
+      containers:
+      - name: redirect
+        image: averagemarcus/worst-webhook:latest
+        imagePullPolicy: Always
+        command:
+        - /app/redirect
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: redirect-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: redirect-secret
+        secret:
+          secretName: redirect-secret

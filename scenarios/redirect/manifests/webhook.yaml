@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: "redirect.marcusnoble.com"
+  labels:
+    scenario: redirect
+webhooks:
+- name: "redirect.marcusnoble.com"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    resources:   ["pods"]
+    operations:  ["CREATE"]
+    scope:       "*"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "redirect"
+      path: /mutate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up
