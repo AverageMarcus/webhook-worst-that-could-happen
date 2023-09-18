@@ -20,7 +20,7 @@ var (
 
 type AdmissionFunc func(*admission.AdmissionReview, *admission.AdmissionResponse) error
 
-func Handle(admissionFn AdmissionFunc) http.HandlerFunc {
+func Handle(admissionFn AdmissionFunc, hooks ...http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -52,6 +52,11 @@ func Handle(admissionFn AdmissionFunc) http.HandlerFunc {
 			http.Error(w, fmt.Sprintf("could not write response body: %v", err), http.StatusBadRequest)
 			return
 		}
+
+		for _, hook := range hooks {
+			hook(w, r)
+		}
+
 		w.Write(responseBytes)
 	}
 }

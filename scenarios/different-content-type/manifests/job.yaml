@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: different-content-type-webhook-cert-setup
+  labels:
+    scenario: different-content-type
+spec:
+  template:
+    spec:
+      serviceAccountName: webhook-cert-sa
+      initContainers:
+      - name: webhook-cert-setup
+        image: cribl/k8s-webhook-cert-manager:1.0.1
+        command: ["./generate_certificate.sh"]
+        args:
+          - "--service"
+          - "different-content-type"
+          - "--webhook"
+          - "different-content-type.marcusnoble.com"
+          - "--secret"
+          - "different-content-type-secret"
+          - "--namespace"
+          - "default"
+      containers:
+      - name: copy-ca-bundle
+        image: quay.io/giantswarm/kubectl:1.27.4
+        command:
+        - sh
+        - -c
+        - |
+          CABUNDLE=$(kubectl get mutatingwebhookconfiguration different-content-type.marcusnoble.com \
+            -o jsonpath='{.webhooks[0].clientConfig.caBundle}')
+
+          kubectl patch validatingwebhookconfiguration different-content-type.marcusnoble.com \
+            --type='json' -p "[{'op': 'add', 'path': '/webhooks/0/clientConfig/caBundle', 'value':'${CABUNDLE}'}]"
+      - name: set-failure-policy
+        image: quay.io/giantswarm/kubectl:1.27.4
+        command:
+        - sh
+        - -c
+        - |
+          kubectl patch mutatingwebhookconfiguration different-content-type.marcusnoble.com \
+            --type='json' -p "[{'op': 'add', 'path': '/webhooks/0/failurePolicy', 'value':'Fail'}]"
+          kubectl patch validatingwebhookconfiguration different-content-type.marcusnoble.com \
+            --type='json' -p "[{'op': 'add', 'path': '/webhooks/0/failurePolicy', 'value':'Fail'}]"
+      restartPolicy: OnFailure
+  backoffLimit: 3

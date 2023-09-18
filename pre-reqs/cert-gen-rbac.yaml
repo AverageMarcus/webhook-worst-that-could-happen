@@ -9,7 +9,7 @@ metadata:
   name: webhook-cert-cluster-role
 rules:
   - apiGroups: ["admissionregistration.k8s.io"]
-    resources: ["mutatingwebhookconfigurations"]
+    resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
     verbs: ["get", "create", "patch"]
   - apiGroups: ["certificates.k8s.io"]
     resources: ["certificatesigningrequests"]

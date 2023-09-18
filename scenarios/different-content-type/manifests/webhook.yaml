@@ -1,0 +1,48 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: "different-content-type.marcusnoble.com"
+  labels:
+    scenario: different-content-type
+webhooks:
+- name: "different-content-type.marcusnoble.com"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    resources:   ["pods"]
+    operations:  ["*"]
+    scope:       "*"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "different-content-type"
+      path: /mutate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: "different-content-type.marcusnoble.com"
+  labels:
+    scenario: different-content-type
+webhooks:
+- name: "different-content-type.marcusnoble.com"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    resources:   ["pods"]
+    operations:  ["*"]
+    scope:       "*"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "different-content-type"
+      path: /validate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up
+---

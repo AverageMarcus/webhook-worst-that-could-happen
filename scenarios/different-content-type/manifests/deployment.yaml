@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: different-content-type
+  labels:
+    scenario: different-content-type
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: different-content-type
+  template:
+    metadata:
+      labels:
+        scenario: different-content-type
+    spec:
+      serviceAccountName: different-content-type
+      containers:
+      - name: different-content-type
+        image: averagemarcus/worst-webhook:latest
+        imagePullPolicy: Always
+        command:
+        - /app/different-content-type
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: different-content-type-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: different-content-type-secret
+        secret:
+          secretName: different-content-type-secret
