@@ -1,6 +1,6 @@
 # fork-bomb
 
-In this scenario our webhook handler generates a new Event resource to record that the webhook was triggered. This in turn triggers our webhook against the Event resource which generated another Event and so on.
+In this scenario our webhook handler generates a new Event resource to record that the webhook was triggered. This, in turn, triggers our webhook against the new Event resource which generates another Event and so on.
 
 This scenario isn't entirely unreasonable. A lot of validating and mutating webhooks are configured to respond to all resources types (⚠️) for various reasons. It's not impossible that someone might decide to add Events to the webhook with the aim of improving visibility of the webhook actions without realising this will efectively cause a [fork bomb](https://en.wikipedia.org/wiki/Fork_bomb).
 

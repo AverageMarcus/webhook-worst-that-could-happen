@@ -6,7 +6,7 @@ This scenario configures two mutating webhooks with a `reinvocationPolicy` set t
 
 ## Impact
 
-Each webhook is triggered a couple times and then no more. The api-server keeps track of how many times it has called a specific webhook and avoid calling it endlessly.
+Each webhook is triggered 2 times and then no more. The api-server keeps track of how many times it has called a specific webhook and avoid calling it endlessly.
 
 From the Kubernetes documentation:
 

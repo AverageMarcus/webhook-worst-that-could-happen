@@ -1,6 +1,6 @@
 # data-overload
 
-In this scenario we're going to return as much data as possible in the response to the api-server. The achieve this we're piping random data from the `crypto/rand` package to the response writer. This scenario is configured to trigger from creation of Pods only.
+In this scenario we're going to return as much data as possible in the response to the api-server. To achieve this we're piping random data from the `crypto/rand` package to the response writer. This scenario is configured to trigger from creation of Pods only.
 
 ![Preview of the data-overload scenario in action](../../assets/data-overload.gif)
 
