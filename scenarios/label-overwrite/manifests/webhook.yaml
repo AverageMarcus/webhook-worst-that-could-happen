@@ -1,0 +1,24 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: "label-overwrite.marcusnoble.com"
+  labels:
+    scenario: label-overwrite
+webhooks:
+- name: "label-overwrite-1.marcusnoble.com"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    resources:   ["pods"]
+    operations:  ["CREATE"]
+    scope:       "*"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "label-overwrite"
+      path: /mutate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore # This will be set to `Failure` once the CABundle is set up
+  reinvocationPolicy: IfNeeded

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: label-overwrite
+  labels:
+    scenario: label-overwrite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      scenario: label-overwrite
+  template:
+    metadata:
+      labels:
+        scenario: label-overwrite
+    spec:
+      serviceAccountName: label-overwrite
+      containers:
+      - name: label-overwrite
+        image: averagemarcus/worst-webhook:latest
+        imagePullPolicy: Always
+        command:
+        - /app/label-overwrite
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: label-overwrite-secret
+          mountPath: "/tls"
+          readOnly: true
+      volumes:
+      - name: label-overwrite-secret
+        secret:
+          secretName: label-overwrite-secret
